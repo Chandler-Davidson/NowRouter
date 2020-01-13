@@ -2,19 +2,21 @@
   "name": "now-router",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": ["lib/**/*"],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "chandler-davidson",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chandler-davidson/NowRouter.git"
+  },
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^24.0.25",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.3.0",
     "typescript": "^3.7.4"
   },
   "dependencies": {
