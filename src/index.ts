@@ -3,7 +3,7 @@ import { NowRequest, NowResponse } from "@now/node";
 export type RequestHandler = (
   request: NowRequest,
   response: NowResponse
-) => [NowResponse, any];
+) => [NowResponse, any] | Promise<[NowResponse, any]>;
 
 export type HttpMethod =
   | "GET"
@@ -16,7 +16,6 @@ export type HttpMethod =
   | "TRACE"
   | "PATCH";
 
-
 export default class NowRouter {
   private map = new Map<HttpMethod, RequestHandler>();
 
@@ -24,10 +23,13 @@ export default class NowRouter {
     this.map = addRangeToMap(this.map, mappings);
   }
 
-  public handle(request: NowRequest, response: NowResponse): [NowResponse, any] {
+  public async handle(
+    request: NowRequest,
+    response: NowResponse
+  ): Promise<[NowResponse, any]> {
     const method = request.method as HttpMethod;
     const handler = this.map.get(method) as RequestHandler;
-    return handler(request, response);
+    return await handler(request, response);
   }
 }
 

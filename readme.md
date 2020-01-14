@@ -21,34 +21,34 @@ _coffeeShops.ts_
 import { NowRequest, NowResponse } from "@now/node";
 import Router from "now-router";
 
-const router = new Router([
+const router = new NowRouter([
   ["GET", fetchCoffeeShop],
   ["POST", createCoffeeShop]
 ]);
 
-export default function(req: NowRequest, res: NowResponse) {
-  const [response, body] = router.handle(req, res);
+default function(req: NowRequest, res: NowResponse) {
+  const [response, body] = await router.handle(req, res);
   return response.send(body);
 }
 
-function fetchCoffeeShop(
+async function fetchCoffeeShop(
   req: NowRequest,
   res: NowResponse
-): [NowResponse, any] {
+): Promise<[NowResponse, any]> {
   const { id } = req.body;
-  const shop = coffeeShopRepository.get(id);
+  const shop = await coffeeShopRepository.get(id);
 
   if (shop) return [res, shop];
 
   return [res.status(500), "Failed to get coffee shop"];
 }
 
-function createCoffeeShop(
+async function createCoffeeShop(
   req: NowRequest,
   res: NowResponse
-): [NowResponse, any] {
+): Promise<[NowResponse, any]> {
   const newShop = req.body;
-  const result = coffeeShopRepository.addShop(newShop);
+  const result = await coffeeShopRepository.addShop(newShop);
 
   return [res.status(result.error ? 500 : 200), ""];
 }
