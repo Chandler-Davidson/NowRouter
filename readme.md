@@ -21,12 +21,14 @@ _coffeeShops.ts_
 import { NowRequest, NowResponse } from "@now/node";
 import Router from "now-router";
 
-const router = new NowRouter([
+const mappings: [HttpMethod, RequestHandler][] = [
   ["GET", fetchCoffeeShop],
   ["POST", createCoffeeShop]
-]);
+];
 
-default function(req: NowRequest, res: NowResponse) {
+const router = new Router(mappings);
+
+export default function(req: NowRequest, res: NowResponse) {
   const [response, body] = await router.handle(req, res);
   return response.send(body);
 }
