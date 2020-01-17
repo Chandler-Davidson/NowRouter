@@ -17,6 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/chandler-davidson/NowRouter.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "license": "ISC",
   "devDependencies": {
     "typescript": "^3.7.4"
