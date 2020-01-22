@@ -5,7 +5,7 @@ export type RequestHandler = (
   response: NowResponse
 ) => [NowResponse, any] | Promise<[NowResponse, any]>;
 
-export type HttpMethod =
+type HttpMethod =
   | "GET"
   | "HEAD"
   | "POST"
@@ -16,11 +16,14 @@ export type HttpMethod =
   | "TRACE"
   | "PATCH";
 
-export default class NowRouter {
-  private map = new Map<HttpMethod, RequestHandler>();
+export type RouterMethod = HttpMethod | "_";
 
-  public constructor(mappings: [HttpMethod, RequestHandler][]) {
-    this.map = addRangeToMap(this.map, mappings);
+export default class NowRouter {
+  private map = new Map<RouterMethod, RequestHandler>();
+
+  public constructor(mappings: [RouterMethod, RequestHandler][]) {
+    const defaultHandlerAndMappings: [RouterMethod, RequestHandler][] = [["_", defaultHandler], ...mappings];
+    this.map = addRangeToMap(this.map, defaultHandlerAndMappings);
   }
 
   public async handle(
@@ -28,9 +31,17 @@ export default class NowRouter {
     response: NowResponse
   ): Promise<[NowResponse, any]> {
     const method = request.method as HttpMethod;
-    const handler = this.map.get(method) as RequestHandler;
-    return await handler(request, response);
+
+    const handler = this.map.has(method)
+      ? this.map.get(method) as RequestHandler
+      : this.map.get("_") as RequestHandler;
+    
+    return handler(request, response);
   }
+}
+
+function defaultHandler(request: NowRequest, response: NowResponse): [NowResponse, string] {
+  return [response.status(405), `The request method "${request.method}" is not supported.`];
 }
 
 function addRangeToMap<K, V>(map: Map<K, V>, arr: [K, V][]): Map<K, V> {
