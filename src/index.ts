@@ -19,11 +19,11 @@ type HttpMethod =
 export type RouterMethod = HttpMethod | "_";
 
 export default class NowRouter {
-  private map = new Map<RouterMethod, RequestHandler>();
+  private map: Map<RouterMethod, RequestHandler>;
 
   public constructor(mappings: [RouterMethod, RequestHandler][]) {
     const defaultHandlerAndMappings: [RouterMethod, RequestHandler][] = [["_", defaultHandler], ...mappings];
-    this.map = addRangeToMap(this.map, defaultHandlerAndMappings);
+    this.map = new Map(defaultHandlerAndMappings);
   }
 
   public async handle(
@@ -42,12 +42,4 @@ export default class NowRouter {
 
 function defaultHandler(request: NowRequest, response: NowResponse): [NowResponse, string] {
   return [response.status(405), `The request method "${request.method}" is not supported.`];
-}
-
-function addRangeToMap<K, V>(map: Map<K, V>, arr: [K, V][]): Map<K, V> {
-  for (const [key, value] of arr) {
-    map.set(key, value);
-  }
-
-  return map;
 }
